@@ -6,8 +6,13 @@ using UnityEngine;
 [AddComponentMenu("Control Script/FPS Input")]
 public class PlayerMovement : MonoBehaviour
 {
+    public int score = 0;
+
     public float speed = 6.0f;
     public float gravity = -9.8f;
+
+    public bool isSprinting = false;
+    public float stamina = 1.0f;
 
     private CharacterController charController;
 
@@ -28,5 +33,47 @@ public class PlayerMovement : MonoBehaviour
         movement *= Time.deltaTime;
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            isSprinting = true;
+            Debug.Log("SPRINT!");
+        }
+
+
+    }
+
+    private void OnEnable()
+    {
+        
+    }
+
+    private void OnDisable ()
+    {
+
+    }
+
+    private void Sprint()
+    {
+
+    }
+
+    private void StaminaManagement()
+    {
+        if(isSprinting) 
+        {
+            if(stamina >= 0)
+            {
+                stamina -= 0.125f;
+            }
+        }
+        else
+        {
+            if(stamina <= 1.0)
+            {
+                stamina += 0.0625f;
+            }
+
+        }
     }
 }
