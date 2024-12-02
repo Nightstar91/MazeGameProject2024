@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public int score = 0;
 
     public float speed = 6.0f;
+    public float speedMultiplier = 1f;
     public float gravity = -9.8f;
 
     public bool isSprinting = false;
@@ -23,14 +24,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        float deltaX = Input.GetAxis("Horizontal") * speed;
+        float deltaX = Input.GetAxis("Horizontal") * speed; ;
         float deltaZ = Input.GetAxis("Vertical") * speed;
         Vector3 movement = new Vector3(deltaX, 0, deltaZ);
         movement = Vector3.ClampMagnitude(movement, speed);
 
         movement.y = gravity;
 
-        movement *= Time.deltaTime;
+        movement *= Time.deltaTime * speedMultiplier;
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
 

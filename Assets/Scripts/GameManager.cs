@@ -1,16 +1,19 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
 
     public int allCoinCount;
     public int coinCount;
-    private bool collectedAllCoin;
+    private float powerupRespawnTimer = 100f;
 
     // Variabel for unity event
     public static GameManager instance;
     public UnityEvent coinResetEvent;
+    public UnityEvent powerupRespawnEvent;
 
     // Setting up the singleton for unityevent
     private void Awake()
@@ -24,7 +27,6 @@ public class GameManager : MonoBehaviour
     {
         SearchAllCoins();
         coinCount = 0;
-        collectedAllCoin = false;
 
     }
 
@@ -33,11 +35,22 @@ public class GameManager : MonoBehaviour
     {
         // Track all coins
         CoinTracker();
+
+        // Operation for handling powerup
+        PowerupTimer();
+        CheckPowerupTimer();
     }
+
 
     public static UnityEvent GetCoinResetEvent()
     {
         return instance.coinResetEvent;
+    }
+
+
+    public static UnityEvent GetPowerupRespawnEvent()
+    {
+        return instance.powerupRespawnEvent;
     }
 
 
@@ -49,20 +62,54 @@ public class GameManager : MonoBehaviour
         Debug.Log($"There are {allCoinCount} coins in the level");
     }
 
+
     public void AddToCoinCount(int amount)
     {
         coinCount += amount;
     }
+
 
     private void CoinTracker()
     {
         // If the player coin count equals to the amount of coin inside a level...
         if (coinCount == allCoinCount)
         {
-            // They have successfully collected all the coin
-            collectedAllCoin = true;
+            // Begin coroutine to make the coin respawn after a short delay
+            //CoinRespawnDelay();
 
             coinResetEvent.Invoke();
+        }
+    }
+
+
+    public void CoinRespawnDelay()
+    {
+        StartCoroutine(CoinRespawnDelayRoutine());
+    }
+
+
+    IEnumerator CoinRespawnDelayRoutine()
+    {
+        yield return new WaitForSeconds(3f);
+
+        coinResetEvent.Invoke();
+    }
+
+
+    private void PowerupTimer()
+    { 
+        powerupRespawnTimer -= Time.deltaTime;
+    }
+
+
+    private void CheckPowerupTimer()
+    {
+        // Once the timer reaches zero, respawn all powerup in a scene
+        if(powerupRespawnTimer <= 0)
+        {
+            powerupRespawnEvent.Invoke();
+            powerupRespawnTimer = 100f;
+            //Debug.Log($"Powerup Timer has reseted!!  now at {powerupRespawnTimer}");
         }
     }
 }

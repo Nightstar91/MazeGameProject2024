@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(AudioSource))]
 public class Coin : MonoBehaviour
 {
     // Declaring variables
@@ -10,7 +11,7 @@ public class Coin : MonoBehaviour
     private GameManager gameManager;
 
     public AudioSource coinAudioSource;
-    [SerializeField] private AudioClip coinCollectSound;
+    [SerializeField] private AudioClip collectClip;
 
     // Start is called before the first frame update
     void Start()
@@ -19,8 +20,11 @@ public class Coin : MonoBehaviour
         player = GameObject.Find("Player").GetComponent<Player>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        // Handling audio 
         coinAudioSource = GetComponent<AudioSource>();
+        coinAudioSource.clip = collectClip;
 
+        // Subscribe to the coin reset event
         GameManager.GetCoinResetEvent().AddListener(ResetCoin);
     }
 
@@ -35,7 +39,7 @@ public class Coin : MonoBehaviour
     // On collision give the player one coin to be added to their stats
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("SOMEONE HIT THE COIN");
+        //Debug.Log("SOMEONE HIT THE COIN");
 
         if (other.name == "Player")
         {
@@ -45,8 +49,7 @@ public class Coin : MonoBehaviour
 
             //Debug.Log($"COIN AMOUNT IN PLAYER: {gameManager.coinCount} , COIN AMOUNT IN LEVEL: {gameManager.allCoinCount} ");
 
-            coinAudioSource.clip = coinCollectSound;
-            coinAudioSource.Play();
+            //coinAudioSource.PlayOneShot(coinAudioSource.clip);
         }
     }
 
