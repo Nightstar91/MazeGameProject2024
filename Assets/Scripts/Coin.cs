@@ -41,7 +41,7 @@ public class Coin : MonoBehaviour
     {
         //Debug.Log("SOMEONE HIT THE COIN");
 
-        if (other.name == "Player")
+        if (other.name == "Player" && player.coinPickUpDelay == false)
         {
             player.GainPoint(10);           // Gain points with each coin pick up
             gameManager.AddToCoinCount(1);  // Add to coin count for internal tracking

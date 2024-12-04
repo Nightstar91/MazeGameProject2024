@@ -1,32 +1,43 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+
+// State Programming help: https://gameprogrammingpatterns.com/state.html
 
 public class Player : MonoBehaviour
 {
     // Declaring class variable
-    public Powerup[] powerupArray = new Powerup[3];
+    public Powerup[] powerupArray = new Powerup[3]; // NOTE: this array needs to be initialized in the editor or powerup will not work!! Use powerup Setter
     private PlayerMovement movement;
     private Horse horse;
 
     // Boolean/Variable for powerup operation
-    public bool powerupMultiplierOn;
-    public bool powerupSpeedOn;
-    public bool powerupSonarOn;
+    private bool powerupMultiplierOn;
+    private bool powerupSpeedOn;
+    private bool powerupSonarOn;
+    public bool didPlayerDie; // WORK ON THE PLAYER DEAD STATE, POWERUP RESPAWN TIMER AND BUILD NAVMESH FOR AI
+    public bool coinPickUpDelay;
     public int multiplier;
-    private const float speedBoost = 4f;
+    private const float speedBoost = 1.75f;
 
     // Game stat/Ui related variable
     private int timerMinute;
     private int timerSecond;
+    public float inGameTimer; // This specific timer variable will be use for handling logic for determining difficulty
     private float second;
     public int score;
 
-    // Dealing with UI
+    // Dealing with HUD
     [SerializeField] TextMeshProUGUI scoreLabel;
     [SerializeField] TextMeshProUGUI timerLabel;
     [SerializeField] TextMeshProUGUI powerupMultiplerLabel;
     [SerializeField] TextMeshProUGUI powerupSpeedLabel;
     [SerializeField] TextMeshProUGUI powerupSonarLabel;
+    [SerializeField] Slider staminaBarSlider;
+
+    // Dealing with End Screen
+    [SerializeField] GameObject gameoverPanel;
+    [SerializeField] TextMeshProUGUI resultLabel;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,7 +48,10 @@ public class Player : MonoBehaviour
         timerMinute = 0;
         timerSecond = 0;
         second = 0;
+        coinPickUpDelay = false;
+        didPlayerDie = false;
 
+        // Powerup related variable
         powerupMultiplierOn = false;
         powerupSpeedOn = false;
         powerupSonarOn = false;
@@ -49,15 +63,23 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Logic handling powerup
-        HandlePlayerPowerupFunction();
+        if(movement.playerState == PlayerMovement.PlayerState.STATE_WALKING || movement.playerState == PlayerMovement.PlayerState.STATE_SPRINTING)
+        {
+            // Logic handling powerup
+            HandlePlayerPowerupFunction();
 
-        // Logic involving countdown
-        Timer();
-        HandlePlayerPowerupCountdown();
+            // Logic involving countdown
+            Timer();
+            HandlePlayerPowerupCountdown();
 
-        // UI
-        UpdateUI();
+            // UI
+            UpdateUI();
+        }
+        else
+        {
+            DisplayEndResult();
+        }
+
     }
 
     // To handle the powerup entity
@@ -191,9 +213,11 @@ public class Player : MonoBehaviour
 
     public void Timer()
     {
-        // Decrement the timer
+        // Increment the timer based on real seconds
         second += Time.deltaTime;
-        if(second >= 60f)
+        inGameTimer += Time.deltaTime; // This specific timer variable will be use for handling logic for determining difficulty (see GameManager, CheckDifficulty())
+
+        if (second >= 60f)
         {
             timerMinute += 1;
             second = 0;
@@ -218,5 +242,17 @@ public class Player : MonoBehaviour
         powerupMultiplerLabel.text = string.Format("{0:F1}", powerupArray[0].countdownAmount);
         powerupSpeedLabel.text = string.Format("{0:F1}", powerupArray[1].countdownAmount);
         powerupSonarLabel.text = string.Format("{0:F1}", powerupArray[2].countdownAmount);
+
+        // Displaying the current value of the stamina bar
+        staminaBarSlider.value = movement.stamina;
+    }
+
+    private void DisplayEndResult()
+    {
+        // Tint the screen red to indicate game over
+        gameoverPanel.SetActive(true);
+
+        // Display end result
+        resultLabel.text = string.Format("GAME OVER\n\nScore: {0}\nTime:{1} Minute, {2} Second", score, timerMinute, timerSecond); 
     }
 }
