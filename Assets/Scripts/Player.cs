@@ -253,6 +253,6 @@ public class Player : MonoBehaviour
         gameoverPanel.SetActive(true);
 
         // Display end result
-        resultLabel.text = string.Format("GAME OVER\n\nScore: {0}\nTime:{1} Minute, {2} Second", score, timerMinute, timerSecond); 
+        resultLabel.text = string.Format("GAME OVER\n\nScore: {0}\nYou have lasted for...\n{1} Minutes and {2} Seconds", score, timerMinute, timerSecond); 
     }
 }

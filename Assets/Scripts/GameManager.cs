@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
         Easy,
         Normal,
         Hard,
-        Ultra
+        UltraHard
     }
 
     private Player player;
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
                 powerupRespawnTimerReset = 90f;
                 break;
 
-            case GameDifficulty.Ultra:
+            case GameDifficulty.UltraHard:
                 powerupRespawnTimerReset = 120f;
                 break;
         }
@@ -176,10 +176,10 @@ public class GameManager : MonoBehaviour
         {
             difficulty = GameDifficulty.Hard;
         }
-        // Past 9+ minutes for Ultra mode
+        // Past 10+ minutes for Ultra mode
         else
         {
-            difficulty = GameDifficulty.Ultra;
+            difficulty = GameDifficulty.UltraHard;
         }
     }
 }

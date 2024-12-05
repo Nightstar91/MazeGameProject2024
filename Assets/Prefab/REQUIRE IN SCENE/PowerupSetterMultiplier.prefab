@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4187957082767206522}
   - component: {fileID: 1961363451197813773}
   m_Layer: 0
-  m_Name: PowerupSetterMutliplier
+  m_Name: PowerupSetterMultiplier
   m_TagString: Untagged
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -45,5 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerUpType: 0
-  powerUpEnabled: 0
   countdownAmount: 0
