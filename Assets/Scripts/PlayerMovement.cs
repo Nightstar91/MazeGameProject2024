@@ -48,12 +48,6 @@ public class PlayerMovement : MonoBehaviour
                 HandleMovement();
                 StaminaRegenerate();
 
-                // TESTING FOR DEADSTATE
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    player.didPlayerDie = true;
-                }
-
                 if (isSprinting == true)
                 {
                     playerState = PlayerState.STATE_SPRINTING;
@@ -64,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 break;
+
 
             case PlayerState.STATE_SPRINTING:
                 // Overloaded method that handle movement while sprinting
@@ -78,17 +73,14 @@ public class PlayerMovement : MonoBehaviour
                 {
                     playerState = PlayerState.STATE_DEAD;
                 }
-
-                Debug.Log("SPRINT!");
                 break;
 
+
             case PlayerState.STATE_DEAD:
-                // Implement function so that the player is considered dead
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    player.didPlayerDie = false;
-                    playerState = PlayerState.STATE_WALKING;
-                }
+                // Implement function so that the player see that they are dead
+
+
+                //
                 break;
         }
 
@@ -101,11 +93,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void OnDisable ()
-    {
-
-    }
-
-    private void Sprint()
     {
 
     }

@@ -11,14 +11,20 @@ public class Horse : MonoBehaviour
 
     // Declaring class variable\
     // Variable involving AI
-    private GameObject player;
     private NavMeshAgent horseAI;
-    private bool hasReachDestination;
-    private bool hasSeenPlayer;
-    [SerializeField] private GameObject waypointToNavigate;
+    private FieldOfView horseFOV;
+
+    private GameObject player;
+    [SerializeField] private GameObject waypointToNavigate = null;
     private GameObject waypointToNavigateTemp;
     private GameObject[] allWaypoint;
+
+    private bool hasReachDestination;
+    private bool hasSeenPlayer;
+
     private int allWaypointLength;
+    public float horseSpeedMultipler = 1;
+
     public HorseState state;
 
     // Variable relating to powerup Operation
@@ -29,9 +35,11 @@ public class Horse : MonoBehaviour
     {
         // Initializing all variable involving AI
         horseAI = GetComponent<NavMeshAgent>();
+        horseFOV = GetComponent<FieldOfView>(); 
         SearchAllWaypoint();
+        ChooseRandomWaypoint();
+        horseAI.SetDestination(waypointToNavigate.transform.position);
 
-        hasReachDestination = false;
         hasSeenPlayer = false;
 
         state = HorseState.STATE_WANDERING;
@@ -47,14 +55,37 @@ public class Horse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        horseAI.speed *= horseSpeedMultipler;
+
         switch(state)
         {
             case HorseState.STATE_WANDERING:
-                horseAI.SetDestination(waypointToNavigate.transform.position);
+                // Based on the boolean check it will either continue to move toward way point or generate a new waypoint
+                MoveToWayPoint();
+
+                // The horse check to see if it reach the way point
+                hasReachDestination = CheckIfDestinationReached();
+
+                // Checking to see if the horse see the player, if so change to state to be chasing
+                if(horseFOV.canSeePlayer == true)
+                {
+                    state = HorseState.STATE_CHASING;
+                }
+
                 break;
 
             case HorseState.STATE_CHASING:
+                // Reset the waypoint that the horse was navigating
+                Debug.Log("HORSE SEES THE PLAYER");
+
+                waypointToNavigate = null;
+
                 horseAI.SetDestination(player.transform.position);
+
+                if(horseFOV.canSeePlayer == false)
+                {
+                    state = HorseState.STATE_WANDERING;
+                }
                 break;
         }
     }
@@ -66,18 +97,47 @@ public class Horse : MonoBehaviour
 
         // Get the length of the array of waypoint to be use for method for randomly assigning 
         allWaypointLength = allWaypoint.Length;
+
+        Debug.Log($"There are {allWaypointLength} waypoints in the map");
     }
+
 
     private void ChooseRandomWaypoint()
     {
         if (waypointToNavigate == null)
         {
-            waypointToNavigateTemp = allWaypoint[Random.Range(0, allWaypointLength - 1)]; 
+            waypointToNavigate = allWaypoint[Random.Range(0, allWaypointLength - 1)];
+            waypointToNavigateTemp = waypointToNavigate;
         }
     }
 
+
     private void MoveToWayPoint()
     {
+        // For wandering ai path
+        if(hasReachDestination != true && waypointToNavigate != null)
+        {
+            horseAI.SetDestination(waypointToNavigate.transform.position);
+        }
+        // Generate a new ai path after completing the wandering path
+        else
+        {
+            ChooseRandomWaypoint();
+            horseAI.SetDestination(waypointToNavigate.transform.position);
+        }
+    }
 
+
+    private bool CheckIfDestinationReached()
+    {
+        if (horseAI.remainingDistance <= horseAI.stoppingDistance)
+        {
+            waypointToNavigate = null;
+            return true;
+        }
+        else
+        {
+            return false;
+        }   
     }
 }

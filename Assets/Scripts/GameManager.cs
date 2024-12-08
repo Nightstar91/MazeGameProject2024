@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     }
 
     private Player player;
+    private Horse horse;
     public GameDifficulty difficulty;
     public int allCoinCount;
     public int coinCount;
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
         SearchAllCoins();
         coinCount = 0;
         player = GameObject.Find("Player").GetComponent<Player>();
+        horse = GameObject.Find("Horse").GetComponent<Horse>();
     }
 
     // Update is called once per frame
@@ -142,18 +144,22 @@ public class GameManager : MonoBehaviour
         {
             case GameDifficulty.Easy:
                 powerupRespawnTimerReset = 60f;
+                horse.horseSpeedMultipler = 1;
                 break;
 
             case GameDifficulty.Normal:
                 powerupRespawnTimerReset = 75f;
+                horse.horseSpeedMultipler = 1.5f;
                 break;
 
             case GameDifficulty.Hard:
                 powerupRespawnTimerReset = 90f;
+                horse.horseSpeedMultipler = 2f;
                 break;
 
             case GameDifficulty.UltraHard:
                 powerupRespawnTimerReset = 120f;
+                horse.horseSpeedMultipler = 3f;
                 break;
         }
     }
