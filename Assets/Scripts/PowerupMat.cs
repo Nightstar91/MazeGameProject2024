@@ -13,16 +13,16 @@ public class PowerupMat : MonoBehaviour
         powerup = GetComponent<Powerup>();
         powerupEntity = this.gameObject;
 
-        // Determining what powerup the entity is and changing the color based on powerup type
-        if(powerup.powerUpType == Powerup.PowerupClassification.Multiplier)
+        // Determining what powerup the entity is and changing the material color based on powerup type
+        if(powerup.powerUpType == Powerup.PowerupClassification.Multiplier) // Yellow for multiplier
         {
             powerupEntity.GetComponent<Renderer>().material.color = Color.yellow;
         }
-        else if(powerup.powerUpType == Powerup.PowerupClassification.Speed)
+        else if(powerup.powerUpType == Powerup.PowerupClassification.Speed) // cyan for speed boost
         {
             powerupEntity.GetComponent<Renderer>().material.color = Color.cyan;
         }
-        else
+        else // red for sonar vision
         {
             powerupEntity.GetComponent<Renderer>().material.color = Color.red;
         }

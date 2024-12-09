@@ -9,25 +9,22 @@ public class Horse : MonoBehaviour
         STATE_CHASING
     }
 
-    // Declaring class variable\
+    // Declaring class variable
     // Variable involving AI
     private NavMeshAgent horseAI;
     private FieldOfView horseFOV;
-
     private GameObject player;
     [SerializeField] private GameObject waypointToNavigate = null;
-    private GameObject waypointToNavigateTemp;
     private GameObject[] allWaypoint;
-
     private bool hasReachDestination;
-    private bool hasSeenPlayer;
-
     private int allWaypointLength;
-    public float horseSpeedMultipler = 1;
 
+    // Variable involving the horse's stat
+    public float horseSpeedMultipler = 1;
+    private const float horseSpeed = 3f;
     public HorseState state;
 
-    // Variable relating to powerup Operation
+    // Variable relating to powerup operation
     public GameObject sonarZone;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -40,8 +37,7 @@ public class Horse : MonoBehaviour
         ChooseRandomWaypoint();
         horseAI.SetDestination(waypointToNavigate.transform.position);
 
-        hasSeenPlayer = false;
-
+        // Setting the default state
         state = HorseState.STATE_WANDERING;
 
         // Find the gameobject that represent the Sonar zone for player
@@ -55,7 +51,8 @@ public class Horse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horseAI.speed *= horseSpeedMultipler;
+        // Setting the speed based on the difficulty
+        horseAI.speed = horseSpeed * horseSpeedMultipler;
 
         switch(state)
         {
@@ -63,10 +60,10 @@ public class Horse : MonoBehaviour
                 // Based on the boolean check it will either continue to move toward way point or generate a new waypoint
                 MoveToWayPoint();
 
-                // The horse check to see if it reach the way point
+                // The horse check to see if it reached the way point
                 hasReachDestination = CheckIfDestinationReached();
 
-                // Checking to see if the horse see the player, if so change to state to be chasing
+                // Checking to see if the horse see the player, if so change to state to chasing
                 if(horseFOV.canSeePlayer == true)
                 {
                     state = HorseState.STATE_CHASING;
@@ -76,16 +73,17 @@ public class Horse : MonoBehaviour
 
             case HorseState.STATE_CHASING:
                 // Reset the waypoint that the horse was navigating
-                Debug.Log("HORSE SEES THE PLAYER");
-
                 waypointToNavigate = null;
 
+                // Set the waypoint to the player position to chase them
                 horseAI.SetDestination(player.transform.position);
 
-                if(horseFOV.canSeePlayer == false)
+                // If the horse lose sight of the player or is dead, Go back to wandering
+                if(horseFOV.canSeePlayer == false || player.GetComponent<Player>().movement.playerState != PlayerMovement.PlayerState.STATE_DEAD)
                 {
                     state = HorseState.STATE_WANDERING;
                 }
+
                 break;
         }
     }
@@ -104,10 +102,11 @@ public class Horse : MonoBehaviour
 
     private void ChooseRandomWaypoint()
     {
+        // Only generate a new waypoint if the waypoint variable is null
         if (waypointToNavigate == null)
         {
+            // Pick a random waypoint found in the scene
             waypointToNavigate = allWaypoint[Random.Range(0, allWaypointLength - 1)];
-            waypointToNavigateTemp = waypointToNavigate;
         }
     }
 
@@ -130,9 +129,12 @@ public class Horse : MonoBehaviour
 
     private bool CheckIfDestinationReached()
     {
+        // Checking to see if the horse reach the waypoint based on distance
         if (horseAI.remainingDistance <= horseAI.stoppingDistance)
         {
+            // Reset waypoint
             waypointToNavigate = null;
+
             return true;
         }
         else

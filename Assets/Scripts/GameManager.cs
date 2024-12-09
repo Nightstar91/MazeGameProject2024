@@ -13,12 +13,14 @@ public class GameManager : MonoBehaviour
         UltraHard
     }
 
+    // Declaring class variable
+    // Dealing with game object, game difficulty and game's stat
     private Player player;
     private Horse horse;
     public GameDifficulty difficulty;
     public int allCoinCount;
     public int coinCount;
-    private float powerupRespawnTimer;
+    public float powerupRespawnTimer;
     public float powerupRespawnTimerReset;
 
     // Variable for unity event
@@ -38,13 +40,13 @@ public class GameManager : MonoBehaviour
     {
         // Initialize all variable
         difficulty = GameDifficulty.Easy;
-        powerupRespawnTimer = 60f;
         powerupRespawnTimerReset = powerupRespawnTimer;
         SearchAllCoins();
         coinCount = 0;
         player = GameObject.Find("Player").GetComponent<Player>();
         horse = GameObject.Find("Horse").GetComponent<Horse>();
     }
+
 
     // Update is called once per frame
     void Update()
@@ -62,6 +64,7 @@ public class GameManager : MonoBehaviour
     }
 
 
+    // For subscribing to the game manager's unityevent
     public static UnityEvent GetCoinResetEvent()
     {
         return instance.coinResetEvent;
@@ -102,7 +105,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Coroutine
+
     public void CoinRespawnDelay()
     {
         StartCoroutine(CoinRespawnDelayRoutine());
@@ -137,29 +140,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     // Difficulty will affect the poweruprespawn timer and movement speed of the horse
     public void ChangeGameStatBasedOnDifficulty()
     {
         switch(difficulty)
         {
             case GameDifficulty.Easy:
-                powerupRespawnTimerReset = 60f;
+                powerupRespawnTimerReset = 30f;
                 horse.horseSpeedMultipler = 1;
                 break;
 
             case GameDifficulty.Normal:
-                powerupRespawnTimerReset = 75f;
+                powerupRespawnTimerReset = 45f;
                 horse.horseSpeedMultipler = 1.5f;
                 break;
 
             case GameDifficulty.Hard:
-                powerupRespawnTimerReset = 90f;
-                horse.horseSpeedMultipler = 2f;
+                powerupRespawnTimerReset = 75f;
+                horse.horseSpeedMultipler = 2.5f;
                 break;
 
             case GameDifficulty.UltraHard:
                 powerupRespawnTimerReset = 120f;
-                horse.horseSpeedMultipler = 3f;
+                horse.horseSpeedMultipler = 4f;
                 break;
         }
     }
@@ -167,22 +171,22 @@ public class GameManager : MonoBehaviour
 
     public void CheckDifficulty()
     {
-        // Checking to see if the player's timer is within range of 0-2 minutes for easy mode
-        if(player.inGameTimer >= 0f && player.inGameTimer <= 120f)
+        // Checking to see if the player's timer is within range of 0-1 minutes for easy mode
+        if(player.inGameTimer >= 0f && player.inGameTimer <= 60f)
         {
             difficulty = GameDifficulty.Easy;
         }
-        // Checking to see if the player's timer is within range of 2-5 minutes for Normal mode
-        else if (player.inGameTimer > 120f && player.inGameTimer <= 300f)
+        // Checking to see if the player's timer is within range of 1-3 minutes for Normal mode
+        else if (player.inGameTimer > 60f && player.inGameTimer <= 180f)
         {
             difficulty = GameDifficulty.Normal;
         }
-        // Checking to see if the player's timer is within range of 5-10 minutes for Hard mode
-        else if (player.inGameTimer > 300f && player.inGameTimer <= 600f)
+        // Checking to see if the player's timer is within range of 3-6 minutes for Hard mode
+        else if (player.inGameTimer > 180f && player.inGameTimer <= 360f)
         {
             difficulty = GameDifficulty.Hard;
         }
-        // Past 10+ minutes for Ultra mode
+        // Past 6+ minutes for Ultra mode
         else
         {
             difficulty = GameDifficulty.UltraHard;

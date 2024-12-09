@@ -10,13 +10,14 @@ public class Coin : MonoBehaviour
     public Player player;
     private GameManager gameManager;
 
+    // Involving audio
     public AudioSource coinAudioSource;
     [SerializeField] private AudioClip collectClip;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Finding the player object in the scene to reference for collision
+        // Finding the player object in the scene to reference the collision
         player = GameObject.Find("Player").GetComponent<Player>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
@@ -28,8 +29,10 @@ public class Coin : MonoBehaviour
         GameManager.GetCoinResetEvent().AddListener(ResetCoin);
     }
 
+
     public void ResetCoin()
     {
+        // Resetting the coin object so it respawn for the player to collect again
         gameObject.SetActive(true);
 
         gameManager.coinCount = 0;
@@ -39,8 +42,8 @@ public class Coin : MonoBehaviour
     // On collision give the player one coin to be added to their stats
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("SOMEONE HIT THE COIN");
 
+        // Checking to see if the collison was cause by the player
         if (other.name == "Player" && player.coinPickUpDelay == false)
         {
             player.GainPoint(10);           // Gain points with each coin pick up
@@ -52,5 +55,4 @@ public class Coin : MonoBehaviour
             //coinAudioSource.PlayOneShot(coinAudioSource.clip);
         }
     }
-
 }

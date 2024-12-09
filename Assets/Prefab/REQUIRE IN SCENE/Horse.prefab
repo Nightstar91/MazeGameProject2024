@@ -48,14 +48,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 15
-  angle: 90
+  angle: 120
+  playerRef: {fileID: 0}
   targetMask:
     serializedVersion: 2
     m_Bits: 128
-  obstructionMusk:
+  obstructionMask:
     serializedVersion: 2
     m_Bits: 64
-  canSeeTarget: 0
+  canSeePlayer: 0
 --- !u!114 &1480208332033883637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,6 +70,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointToNavigate: {fileID: 0}
+  horseSpeedMultipler: 1
   state: 1
   sonarZone: {fileID: 0}
 --- !u!195 &8455493924848825331
@@ -597,7 +599,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

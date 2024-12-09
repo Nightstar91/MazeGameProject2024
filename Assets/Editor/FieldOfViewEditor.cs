@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+// !!! CREDIT for this entire script: Comp-3 Interactive on youtube "How to Add a Field of View for Your Enemies [Unity Tutorial]", https://www.youtube.com/watch?v=j1-OyLo77ss
 [CustomEditor(typeof(FieldOfView))]
 public class FieldOfViewEditor : Editor
 {
@@ -10,6 +11,7 @@ public class FieldOfViewEditor : Editor
         Handles.color = Color.white;
         Handles.DrawWireArc(fov.transform.position, Vector3.up, Vector3.forward, 360, fov.radius);
 
+        
         Vector3 viewAngle01 = DirectionFromAngle(fov.transform.eulerAngles.y, -fov.angle / 2);
         Vector3 viewAngle02 = DirectionFromAngle(fov.transform.eulerAngles.y, fov.angle / 2);
 

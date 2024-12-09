@@ -7,15 +7,18 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     // Declaring class variable
-    public Powerup[] powerupArray = new Powerup[3]; // NOTE: this array needs to be initialized in the editor or powerup will not work!! Use powerup Setter
-    private PlayerMovement movement;
+    // NOTE: this array needs to be initialized in the editor or powerup will not work!! Use powerup Setter.
+    // Use the following order: 1. Multiplier, 2. Speed, 3. Sonar
+    public Powerup[] powerupArray = new Powerup[3];
+
+    public PlayerMovement movement;
     private Horse horse;
 
     // Boolean/Variable for powerup operation
     private bool powerupMultiplierOn;
     private bool powerupSpeedOn;
     private bool powerupSonarOn;
-    public bool didPlayerDie; // WORK ON THE PLAYER DEAD STATE, POWERUP RESPAWN TIMER AND BUILD NAVMESH FOR AI
+    public bool didPlayerDie; 
     public bool coinPickUpDelay;
     public int multiplier;
     private const float speedBoost = 1.75f;
@@ -60,6 +63,7 @@ public class Player : MonoBehaviour
         horse = GameObject.Find("Horse").GetComponent<Horse>();
     } 
 
+
     // Update is called once per frame
     void Update()
     {
@@ -75,6 +79,7 @@ public class Player : MonoBehaviour
             // UI
             UpdateUI();
         }
+        // This is for when the player is in a dead state
         else
         {
             DisplayEndResult();
@@ -82,10 +87,11 @@ public class Player : MonoBehaviour
 
     }
 
-    // To handle the powerup entity
+
+    // To handle the game entity found in the scene
     private void OnTriggerEnter(Collider other)
     {
-        // Logic for when the power collide with the powerup object
+        // Checking to see if the player collide with the horse
         if(other.CompareTag("Powerup"))
         {
             // Turn off the powerup
@@ -94,17 +100,24 @@ public class Player : MonoBehaviour
             // Giving the powerup to the player
             AddPowerup(other.GetComponent<Powerup>());
         }
+
+        // Checking to see if the player collide with the horse
+        else if(other.name == "HorseCollison")
+        {
+            movement.playerState = PlayerMovement.PlayerState.STATE_DEAD;
+        }
     }
 
 
     public void HandlePlayerPowerupFunction()
     {
-        // Powerup for score multiplier
+        // Checking to see if the player picked up the multiplier powerup
         if (powerupMultiplierOn == true)
         {
             // Add upon to multiplayer
             multiplier = 4;
         }
+        // for when the powerup ran out
         else
         {
             // resume normal behavior
@@ -113,12 +126,13 @@ public class Player : MonoBehaviour
         }
 
 
-        // Powerup for speed boost
+        // Checking to see if the player picked up the speed boost powerup
         if (powerupSpeedOn == true)
         {
             // Add functionality for speed powerup
             movement.speedMultiplier = speedBoost;
         }
+        // for when the powerup ran out
         else
         {
             // resume normal behavior
@@ -127,11 +141,12 @@ public class Player : MonoBehaviour
         }
 
 
-        // Powerup for sonar vison
+        // Checking to see if the player picked up the sonar vison powerup
         if (powerupSonarOn == true)
         {
             horse.sonarZone.SetActive(true);
         }
+        // for when the powerup ran out
         else
         {
             powerupSonarOn = false;
@@ -139,7 +154,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    // "Adding" the power by enabling and reseting the powerup timer in the player's powerup array
+
+    // "Adding" the power by enabling and or reseting the powerup timer in the player's powerup array
     public void AddPowerup(Powerup _powerup)
     {
         if(_powerup.powerUpType == Powerup.PowerupClassification.Multiplier)
@@ -211,14 +227,16 @@ public class Player : MonoBehaviour
         score += amount * multiplier;
     }
 
+
     public void Timer()
     {
         // Increment the timer based on real seconds
         second += Time.deltaTime;
-        inGameTimer += Time.deltaTime; // This specific timer variable will be use for handling logic for determining difficulty (see GameManager, CheckDifficulty())
+        inGameTimer += Time.deltaTime; // This specific timer variable will be use for handling logic for determining difficulty (see GameManager, CheckDifficulty method)
 
         if (second >= 60f)
         {
+            // for labeling
             timerMinute += 1;
             second = 0;
         }
@@ -227,9 +245,10 @@ public class Player : MonoBehaviour
         timerLabel.text = string.Format("{0:D2}:{1:F1}", timerMinute, timerSecond);
     }
 
+
     private void UpdateUI()
     {
-        // Casting
+        // Casting for labeling in the player UI
         timerSecond = (int)second;
 
         // Displaying score
@@ -247,7 +266,8 @@ public class Player : MonoBehaviour
         staminaBarSlider.value = movement.stamina;
     }
 
-    private void DisplayEndResult()
+
+    public void DisplayEndResult()
     {
         // Tint the screen red to indicate game over
         gameoverPanel.SetActive(true);

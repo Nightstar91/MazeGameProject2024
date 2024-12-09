@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 public class Powerup : MonoBehaviour
 {
-    // enum
+    // Enum for poweruptype
     public enum PowerupClassification
     {
         Multiplier,
@@ -18,12 +18,14 @@ public class Powerup : MonoBehaviour
     private float countdownAmountSave;
 
 
+    // Reseting the player powerup timer based on its intial countdown amount
     public void ResetPowerUp()
     {
         countdownAmount = countdownAmountSave;
     }
 
 
+    // Respawn the powerup found in the scene for the player to pick up again
     public void RespawnPowerup()
     {
         gameObject.SetActive(true);
@@ -33,14 +35,6 @@ public class Powerup : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
-        // Just in case powertype wasn't set for any reason.
-        if (powerUpType == null)
-        {
-            powerUpType = PowerupClassification.Multiplier;
-            Debug.Log($"poweruptype was null, entity can be found here at X:{gameObject.transform.position.x}, Y:{gameObject.transform.position.y}, Z{gameObject.transform.position.z}, Multiplier automatically applied.");
-        }
-
         // Initializing the time variable to be transfer to the player based on what the powerup type is set by the level designer
         if(powerUpType == PowerupClassification.Multiplier)
         {

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// !!! Credit: Unity in Action by Joesph Hocking, Chapter 2 for mouse camera control code
 public class MouseLook : MonoBehaviour
 {
     public enum RotationAxes

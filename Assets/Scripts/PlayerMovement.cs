@@ -34,9 +34,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Initializing
         charController = GetComponent<CharacterController>();
         player = GameObject.Find("Player").GetComponent<Player>();
     }
+
 
     void Update()
     {
@@ -78,26 +80,13 @@ public class PlayerMovement : MonoBehaviour
 
             case PlayerState.STATE_DEAD:
                 // Implement function so that the player see that they are dead
-
-
-                //
+                player.DisplayEndResult();
                 break;
         }
-
-
-    }
-
-    private void OnEnable()
-    {
-        
-    }
-
-    private void OnDisable ()
-    {
-
     }
 
 
+    // !!! Credit: Unity in Action by Joesph Hocking, Chapter 2 for the movement code
     private void HandleMovement()
     {
         float deltaX = Input.GetAxis("Horizontal") * speed; 
@@ -111,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
 
+        // Checking to see if the user is pressing the shift key to determine state
         if (Input.GetKey(KeyCode.LeftShift))
         {
             isSprinting = true;
@@ -121,6 +111,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    // !!! Credit: Unity in Action by Joesph Hocking, Chapter 2 for the movement code
     private void HandleMovement(float sprintSpeedAmount)
     {
         // Code handling movement while sprinting
@@ -147,8 +139,7 @@ public class PlayerMovement : MonoBehaviour
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
 
-
-
+        // Checking to see if the user is pressing the shift key to determine state
         if (Input.GetKey(KeyCode.LeftShift))
         {
             isSprinting = true;
@@ -167,10 +158,12 @@ public class PlayerMovement : MonoBehaviour
             // Making sure stamina doesn't go beyond the cap of 1
             if (stamina >= 0f && stamina < 1f)
             {
+                // Regenrate stamina while in range of 0-1
                 stamina += Time.deltaTime * regenerateStamina;
             }
             else
             {
+                // Cap the max stamina to be 1
                 stamina = 1f;
             }
 
@@ -183,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
         {
             stamina -= Time.deltaTime * degenerateStamina;
 
-            // Cap the stamina at 0 
+            // Cap the min stamina at 0 
             if (stamina < 0)
             {
                 stamina = 0;
